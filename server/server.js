@@ -77,11 +77,12 @@ app.post('/api/login', function (req, res) {
 app.post('/api/register',function (req,res) {
     var user_name = req.body.username;
     var first_name = req.body.firstname; 
-    var last_name = req.body.lasttname; 
+    var last_name = req.body.lastname; 
     var email = req.body.email; 
     var password = req.body.password;
     var repassword = req.body.repassword;
-    if (user_name && first_name && last_name && email && password && repassword && password == repassword) {
+    // console.log(user_name , first_name , last_name, email, password);
+    if (user_name && first_name && last_name && email && password) {
         db.collection('users').find({"username": user_name}).toArray(function (err,reg_user) {
             if (!reg_user.length) {
                 //Username available continue Register
