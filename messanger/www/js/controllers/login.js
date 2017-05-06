@@ -5,12 +5,23 @@ angular.module('messanger').controller('login',function($scope,User,$rootScope,$
         console.log($scope.saveduser);
         if(valid){
             localStorage.setItem('username',$scope.saveduser.username)
-            var result_obj = User.login($scope.saveduser)
-            if(result_obj.statues== 1){
-                $state.go('activeUser');
-            }else {
+            User.login($scope.saveduser).then(function(res) {
+
+            if(res.status == 1){
+              socket.emit('name_from_client',$scope.saveduser.username)
+                $state.go('app.activeUsers');
+            }else{
               alert('not valid user')
             }
+
+            },function(err){
+
+            })
+            // if(result_obj.status== 1){
+            //     $state.go('activeUser');
+            // }else {
+            //   alert('not valid user')
+            // }
 
         }
 

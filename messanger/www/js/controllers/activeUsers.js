@@ -1,4 +1,9 @@
-angular.module('messanger').controller('activeUsers',function($scope,User,$rootScope,$state){
-    $scope.activeUsers=User.activeUsers();
+angular.module('messanger').controller('activeUsers',function($timeout,$scope,User,$rootScope,$state){
+    socket.on('get_online_users',function(onlines){
+      $timeout(function(){
+        console.log(onlines);
+          $scope.activeUsers=onlines;
+      })
     console.log($scope.activeUsers);
+})
 })
