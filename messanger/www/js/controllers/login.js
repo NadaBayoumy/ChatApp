@@ -7,8 +7,9 @@ angular.module('messanger').controller('login',function($scope,User,$rootScope,$
             localStorage.setItem('username',$scope.saveduser.username)
             User.login($scope.saveduser).then(function(res) {
 
+            $rootScope.loggedinuser = $scope.saveduser;
             if(res.status == 1){
-              socket.emit('name_from_client',$scope.saveduser.username)
+              socket.emit('name_from_client',$scope.saveduser.username , 'online')
                 $state.go('app.activeUsers');
             }else{
               alert('not valid user')

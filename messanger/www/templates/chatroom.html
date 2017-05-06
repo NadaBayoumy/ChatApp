@@ -2,13 +2,13 @@
   <ion-content>
     <div class="container">
       <ul>
-        <li ng-repeat="msg in messages track by $index">{{msg}}</li>
+        <li ng-repeat="msg in messages track by $index">{{msg.name}} : {{msg.message}}</li>
       </ul>
 
       <form novalidate name="signupForm" ng-submit="send()">
         <div class="form-group">
           <label>Message</label>
-          <textarea name="name" ng-model="message" class="form-control" rows="8" cols="80"></textarea>
+          <textarea name="name" ng-model="data.message" class="form-control" rows="8" cols="80"></textarea>
         </div>
 
         <button  class="btn btn-primary">Send</button>
