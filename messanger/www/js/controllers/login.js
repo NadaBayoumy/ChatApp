@@ -9,7 +9,7 @@ angular.module('messanger').controller('login',function($scope,User,$rootScope,$
             if(result_obj.statues== 1){
                 $state.go('activeUser');
             }else {
-                //add ionic popup
+              alert('not valid user')
             }
 
         }
