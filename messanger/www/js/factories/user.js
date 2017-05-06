@@ -48,6 +48,7 @@ angular.module('secondApp').factory('Products',function($http,$q,$ionicPopup,$st
                     console.log(err)
                     def.reject(err)
                 })
+            
             return def.promise;
         },
         register : function(user){

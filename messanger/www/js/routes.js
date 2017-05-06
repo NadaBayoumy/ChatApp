@@ -14,6 +14,15 @@ angular.module('messanger').config(function($stateProvider) {
           }
         }
     })
+    .state('app.chatroom',{
+        url:'/chatroom',
+        views:{
+          "pageContent":{
+            templateUrl:"templates/chatroom.html",
+            controller: "chatroom"
+          }
+        }
+    })
     .state('app.activeUsers',{
         url:'/activeUsers',
         views:{
