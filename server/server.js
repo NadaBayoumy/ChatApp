@@ -77,7 +77,7 @@ app.post('/api/login', function (req, res) {
 app.post('/api/register',function (req,res) {
     var user_name = req.body.username;
     var first_name = req.body.firstname; 
-    var last_name = req.body.lasttname; 
+    var last_name = req.body.lastname; 
     var email = req.body.email; 
     var password = req.body.password;
     var repassword = req.body.repassword;
