@@ -7,32 +7,10 @@ const Mongoclient = require('mongodb').MongoClient;
 const bodyParser = require('body-parser');
 var database;
 var messages = [];
-var users = [];
+var users_online = [];
 var Client;
 
 app.use(bodyParser.json());
-//var _ = reqiure('underscore');
-//
-//function allowCrossDomain(req, res, next) {
-//  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-//
-//  var origin = req.headers.origin;
-//  if (_.contains(app.get('allowed_origins'), origin)) {
-//    res.setHeader('Access-Control-Allow-Origin', origin);
-//  }
-//
-//  if (req.method === 'OPTIONS') {
-//    res.send(200);
-//  } else {
-//    next();
-//  }
-//}
-//
-//app.configure(function () {
-//  app.use(express.logger());
-//  app.use(express.bodyParser());
-//  app.use(allowCrossDomain);
-//});
 
 // Add headers
 app.use(function (req, res, next) {
@@ -76,9 +54,9 @@ app.post('/api/login', function (req, res) {
 
 app.post('/api/register',function (req,res) {
     var user_name = req.body.username;
-    var first_name = req.body.firstname; 
-    var last_name = req.body.lastname; 
-    var email = req.body.email; 
+    var first_name = req.body.firstname;
+    var last_name = req.body.lastname;
+    var email = req.body.email;
     var password = req.body.password;
     var repassword = req.body.repassword;
     // console.log(user_name , first_name , last_name, email, password);
@@ -96,7 +74,7 @@ app.post('/api/register',function (req,res) {
     } else {
         res.send({status: 0, message: ["All fields are required!!. Password and password confirmation must be the the same!."]});
     }
-    
+
 });
 
 app.get('/api/active_users',function(req,res){
@@ -105,9 +83,23 @@ app.get('/api/active_users',function(req,res){
             res.send({status: 1, message: active_users});
         }else{
             res.send({status: 1, message: ["No online users"]});
-        }   
+        }
     });
 })
+
+
+//Socket
+io.on('connection',function (client) {
+    console.log("new client connected with id: "+client.id);
+            db.collection('users').find().toArray(function (err,users) {
+        if (!err) {
+            client.emit('get_online_users',users_online);
+            users_online.push(client);
+            client.broadcast.emit('get_online_users', users_online);
+        }
+    })
+})
+//End Socket
 
 //connect to Mongo
 var url = 'mongodb://localhost:27017/ourchat';

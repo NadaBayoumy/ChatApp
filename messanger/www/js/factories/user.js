@@ -1,4 +1,4 @@
-angular.module('secondApp').factory('Products',function($http,$q,$ionicPopup,$state,$rootScope,$ionicLoading){
+angular.module('messanger').factory('User',function($http,$q,$ionicPopup,$state,$rootScope,$ionicLoading){
 
     // function checkConnection() {
     //     var networkState = navigator.connection.type;
@@ -38,7 +38,7 @@ angular.module('secondApp').factory('Products',function($http,$q,$ionicPopup,$st
             // checkConnection();
             var def = $q.defer();
                 $http({
-                    url:'http://172.16.3.81:3000/api/active_users',
+                    url:'http://172.16.2.139:3000/api/active_users',
                     method:'GET',
                     data: user
                 }).then(function(res){
@@ -48,14 +48,14 @@ angular.module('secondApp').factory('Products',function($http,$q,$ionicPopup,$st
                     console.log(err)
                     def.reject(err)
                 })
-            
+
             return def.promise;
         },
         register : function(user){
             // checkConnection();
             var def = $q.defer();
                 $http({
-                    url:'http://172.16.3.81:3000/api/register',
+                    url:'http://172.16.2.139:3000/api/register',
                     method:'POST',
                     data: user
                 }).then(function(res){
@@ -72,7 +72,7 @@ angular.module('secondApp').factory('Products',function($http,$q,$ionicPopup,$st
             // checkConnection();
             var def = $q.defer();
                 $http({
-                    url:'http://172.16.3.81:3000/api/login',
+                    url:'http://172.16.2.139:3000/api/login',
                     method:'POST',
                     data: user
                 }).then(function(res){
@@ -80,26 +80,6 @@ angular.module('secondApp').factory('Products',function($http,$q,$ionicPopup,$st
                     def.resolve(res.data)
                 },function(err){
                     console.log(err)
-                    def.reject(err)
-                })
-            return def.promise;
-        },
-        getAllProducts : function(){
-            checkConnection();
-            var def = $q.defer();
-
-                $http({
-                    url:'http://test.w34.co/json/',
-                    method:'GET'
-                }).then(function(res){
-                    console.log(res.data)
-                    if(res.data.length){
-                        def.resolve(res.data)
-                    }else{
-                        checkConnection();
-                        def.reject('there is no data')
-                    }
-                },function(err){
                     def.reject(err)
                 })
             return def.promise;
