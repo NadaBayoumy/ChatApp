@@ -84,7 +84,7 @@ app.get('/api/active_users',function(req,res){
         if (active_users.length) {
             res.send({status: 1, message: active_users});
         }else{
-            res.send({status: 1, message: ["No online users"]});
+            res.send({status: 0, message: ["No online users"]});
         }
     });
 })
@@ -103,31 +103,44 @@ io.on('connection',function (client) {
 
     client.on('name_from_client',function(client_name, userstatus){
       var userobj={'id': client.id,'name': client_name, 'status':userstatus };
-      console.log(userobj);
-      for (var obj in users_online) {
-        if (obj.name == client_name) {
-          obj.id = client.id;
+      for (var i = users_online.length - 1; i >= 0; i--) {
+      	 if (users_online[i].name == client_name) {
+          users_online[i].id = client.id;
           flag=1;
           break;
         }
-      }
+      };
       if (flag == 0) {
         users_online.push(userobj);
-      }
-        client.emit('get_online_users',users_online);
-        client.broadcast.emit('get_online_users',users_online);
-        console.log(users_online);
-    })
+      };
+      var users_really_online = [];
+       for (var i = users_online.length - 1; i >= 0; i--) {
+      	 if (users_online[i].status == 'online') {
+          users_really_online.push(users_online[i]);
+        }
+      };
+client.emit('get_online_users',users_really_online);
+        client.broadcast.emit('get_online_users',users_really_online);
+        
+    });
 
 
     client.emit('message_from_server',messages) // fire the event
 
     client.on('message_from_client',function(msg,sender){ // handle the event
+      var today = new Date();
+      var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+	var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+	var dateTime = date+' '+time;
       console.log(msg);
-      senderobj={'name': sender, 'message': msg}
+      senderobj={'name': sender, 'message': msg, 'date':date, 'time':time};
       messages.push(senderobj);
-      client.broadcast.emit("messages_from_server",messages)
-      client.emit("messages_from_server",messages)
+      db.collection('room_messages').insert(senderobj);
+      db.collection('room_messages').find({'date':date}).toArray(function (err,room_msgs) {
+	client.broadcast.emit("messages_from_server",room_msgs)
+      client.emit("messages_from_server",room_msgs)})
+      // client.broadcast.emit("messages_from_server",messages)
+      // client.emit("messages_from_server",messages)
     })
 
 
