@@ -1,0 +1,83 @@
+<ion-view view-title="Register">
+  <ion-content>
+    <form ng-submit="register(registerform.$valid); submitted=true;" novalidate name="registerform">
+
+
+      <div class="field">
+        <label>username</label>
+        <input type="text" ng-model="user.username" name="username" required>
+        <p class="error" ng-if="submitted && registerform.username.$error.required" >Please enter user name</p>
+      </div>
+
+
+
+      <div class="field">
+        <label>first name</label>
+        <input type="text" ng-model="user.firstname" name="firstname" required>
+        <p class="error" ng-if="submitted && registerform.firstname.$error.required" >Please enter first name</p>
+      </div>
+
+      <div class="field">
+        <label>last name</label>
+        <input type="text" ng-model="user.lastname" name="lastname" required>
+        <p class="error" ng-if="submitted && registerform.lastname.$error.required" >Please enter last name</p>
+      </div>
+
+
+
+
+      <div class="field">
+        <label>email</label>
+        <input type="email" ng-model="user.email" name="email" required>
+        <p class="error" ng-if="submitted && registerform.email.$error.required" >Please enter email</p>
+        <p class="error" ng-if="submitted && registerform.email.$error.email" >Please enter valid email</p>
+      </div>
+
+      <div class="field">
+        <label>password</label>
+        <input type="password" ng-model="user.password" ng-minlength="4" name="password" required>
+        <p class="error" ng-if="submitted && registerform.password.$error.required" >Please enter password</p>
+        <p class="error" ng-if="submitted && registerform.password.$error.minlength" >password has minimum length of 4</p>
+      </div>
+
+      <div class="field">
+        <label> retype password</label>
+        <input type="password" ng-model="user.repassword" ng-minlength="4" name="repassword" required>
+        <p class="error" ng-if="submitted && registerform.repassword.$error.required" >Please retype password</p>
+        <p class="error" ng-if="submitted && user.repassword && user.password != user.repassword" >password doesnot match</p>
+        <p class="error" ng-if="submitted && registerform.repassword.$error.minlength" >password has minimum length of 4</p>
+
+      </div>
+
+
+			<div>
+				<button name="button">Register</button>
+			</div>
+		</form>
+    <!-- <form novalidate ng-submit="register()">
+
+        <div class="list">
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">First Name</span>
+          <input type="text"  ng-model="user.username" placeholder="Nada">
+        </label>
+         <label class="item item-input item-stacked-label">
+          <span class="input-label" >Email</span>
+          <input type="text" ng-model="user.email" placeholder="nada@hotmail.com">
+        </label>
+
+        <label class="item item-input item-stacked-label">
+          <span class="input-label" >password</span>
+          <input type="text" ng-model="user.password" placeholder="###">
+        </label>
+        <button>
+          Login
+        </button>
+      </div>
+
+      </form> -->
+
+
+</ion-content>
+
+</ion-view>

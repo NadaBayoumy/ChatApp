@@ -1,0 +1,52 @@
+<ion-view view-title="Login">
+  <ion-content>
+    <form ng-submit="login(loginform.$valid); submitted=true;" novalidate name="loginform">
+
+			<div class="field">
+				<label>username</label>
+				<input type="text" ng-model="saveduser.username" name="username" required>
+				<p class="error" ng-if="submitted && loginform.username.$error.required" >Please enter user name</p>
+			</div>
+
+
+			<div class="field">
+				<label>password</label>
+				<input type="password" ng-model="saveduser.password" ng-minlength="4" name="password" required>
+				<p class="error" ng-if="submitted && loginform.password.$error.required" >Please enter password</p>
+				<p class="error" ng-if="submitted && loginform.password.$error.minlength" >password has minimum length of 4</p>
+			</div>
+
+
+
+
+			<div>
+				<button name="button">login</button>
+			</div>
+		</form>
+    <!-- <form novalidate ng-submit="register()">
+
+        <div class="list">
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">First Name</span>
+          <input type="text"  ng-model="user.username" placeholder="Nada">
+        </label>
+         <label class="item item-input item-stacked-label">
+          <span class="input-label" >Email</span>
+          <input type="text" ng-model="user.email" placeholder="nada@hotmail.com">
+        </label>
+
+        <label class="item item-input item-stacked-label">
+          <span class="input-label" >password</span>
+          <input type="text" ng-model="user.password" placeholder="###">
+        </label>
+        <button>
+          Login
+        </button>
+      </div>
+
+      </form> -->
+
+
+</ion-content>
+
+</ion-view>

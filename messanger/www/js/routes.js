@@ -1,3 +1,4 @@
+//js/routes.js
 angular.module('messanger').config(function($stateProvider) {
     $stateProvider
     .state('app',{
