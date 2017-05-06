@@ -11,6 +11,28 @@ var users = [];
 var Client;
 
 app.use(bodyParser.json());
+var _ = reqiure('underscore');
+
+function allowCrossDomain(req, res, next) {
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+
+  var origin = req.headers.origin;
+  if (_.contains(app.get('allowed_origins'), origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+
+  if (req.method === 'OPTIONS') {
+    res.send(200);
+  } else {
+    next();
+  }
+}
+
+app.configure(function () {
+  app.use(express.logger());
+  app.use(express.bodyParser());
+  app.use(allowCrossDomain);
+});
 
 //Routing
 app.post('/api/login', function (req, res) {
@@ -50,11 +72,20 @@ app.post('/api/register',function (req,res) {
             }
         })
     } else {
-        res.send({status: 0, message: ["All fields are required!!. Password and password confirmation must be the the same!."]})
+        res.send({status: 0, message: ["All fields are required!!. Password and password confirmation must be the the same!."]});
     }
     
-})
+});
 
+app.get('/api/active_users',function(req,res){
+    db.collection('users').find({}).toArray(function (err,active_users) {
+        if (active_users.length) {
+            res.send({status: 1, message: active_users});
+        }else{
+            res.send({status: 1, message: ["No online users"]});
+        }   
+    });
+})
 
 //connect to Mongo
 var url = 'mongodb://localhost:27017/ourchat';
