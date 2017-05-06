@@ -4,14 +4,18 @@
       <ion-list>
          <!-- add a section header -->
          <ion-item class="item-divider">List of Active users</ion-item>
+         <ul>
+           <li ng-repeat="online in activeUsers track by $index">{{online.name}}</li>
+         </ul>
             <!-- iterate thru each item in the list, use $index as item identifier -->
-            <ion-item ng-repeat="activeUser in activeUsers track by $index">
+            <!-- <ion-item ng-repeat="activeUser in activeUsers track by $index">
             <h2>{{activeUser.username}} </h2>
 
-            </ion-item>
+            </ion-item> -->
       </ion-list>
-   </ion-content>
 
+      <button ion-button ui-sref="app.chatroom">Chatroom</button>
+   </ion-content>
 
 
 </ion-view>
