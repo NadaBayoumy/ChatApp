@@ -11,6 +11,49 @@ var users = [];
 var Client;
 
 app.use(bodyParser.json());
+//var _ = reqiure('underscore');
+//
+//function allowCrossDomain(req, res, next) {
+//  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+//
+//  var origin = req.headers.origin;
+//  if (_.contains(app.get('allowed_origins'), origin)) {
+//    res.setHeader('Access-Control-Allow-Origin', origin);
+//  }
+//
+//  if (req.method === 'OPTIONS') {
+//    res.send(200);
+//  } else {
+//    next();
+//  }
+//}
+//
+//app.configure(function () {
+//  app.use(express.logger());
+//  app.use(express.bodyParser());
+//  app.use(allowCrossDomain);
+//});
+
+// Add headers
+app.use(function (req, res, next) {
+
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
+    // Pass to next layer of middleware
+    next();
+});
+
 
 //Routing
 app.post('/api/login', function (req, res) {
@@ -34,7 +77,7 @@ app.post('/api/login', function (req, res) {
 app.post('/api/register',function (req,res) {
     var user_name = req.body.username;
     var first_name = req.body.firstname;
-    var last_name = req.body.lasttname;
+    var last_name = req.body.lastname;
     var email = req.body.email;
     var password = req.body.password;
     var repassword = req.body.repassword;
@@ -50,11 +93,20 @@ app.post('/api/register',function (req,res) {
             }
         })
     } else {
-        res.send({status: 0, message: ["All fields are required!!. Password and password confirmation must be the the same!."]})
+        res.send({status: 0, message: ["All fields are required!!. Password and password confirmation must be the the same!."]});
     }
 
-})
+});
 
+app.get('/api/active_users',function(req,res){
+    db.collection('users').find({}).toArray(function (err,active_users) {
+        if (active_users.length) {
+            res.send({status: 1, message: active_users});
+        }else{
+            res.send({status: 1, message: ["No online users"]});
+        }
+    });
+})
 
 //connect to Mongo
 var url = 'mongodb://localhost:27017/ourchat';
