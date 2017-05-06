@@ -11,28 +11,49 @@ var users = [];
 var Client;
 
 app.use(bodyParser.json());
-var _ = reqiure('underscore');
+//var _ = reqiure('underscore');
+//
+//function allowCrossDomain(req, res, next) {
+//  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+//
+//  var origin = req.headers.origin;
+//  if (_.contains(app.get('allowed_origins'), origin)) {
+//    res.setHeader('Access-Control-Allow-Origin', origin);
+//  }
+//
+//  if (req.method === 'OPTIONS') {
+//    res.send(200);
+//  } else {
+//    next();
+//  }
+//}
+//
+//app.configure(function () {
+//  app.use(express.logger());
+//  app.use(express.bodyParser());
+//  app.use(allowCrossDomain);
+//});
 
-function allowCrossDomain(req, res, next) {
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+// Add headers
+app.use(function (req, res, next) {
 
-  var origin = req.headers.origin;
-  if (_.contains(app.get('allowed_origins'), origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', '*');
 
-  if (req.method === 'OPTIONS') {
-    res.send(200);
-  } else {
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
+    // Pass to next layer of middleware
     next();
-  }
-}
-
-app.configure(function () {
-  app.use(express.logger());
-  app.use(express.bodyParser());
-  app.use(allowCrossDomain);
 });
+
 
 //Routing
 app.post('/api/login', function (req, res) {
