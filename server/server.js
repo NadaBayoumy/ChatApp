@@ -9,6 +9,8 @@ var database;
 var messages = [];
 var users_online = [];
 var Client;
+var users = [];
+var flag=0;
 
 app.use(bodyParser.json());
 
@@ -91,14 +93,46 @@ app.get('/api/active_users',function(req,res){
 //Socket
 io.on('connection',function (client) {
     console.log("new client connected with id: "+client.id);
-            db.collection('users').find().toArray(function (err,users) {
-        if (!err) {
-            client.emit('get_online_users',users_online);
-            users_online.push(client);
-            client.broadcast.emit('get_online_users', users_online);
+    //         db.collection('users').find().toArray(function (err,users) {
+    //     if (!err) {
+    //         client.emit('get_online_users',users_online);
+    //         users_online.push(client);
+    //         client.broadcast.emit('get_online_users', users_online);
+    //     }
+    // })
+
+    client.on('name_from_client',function(client_name, userstatus){
+      var userobj={'id': client.id,'name': client_name, 'status':userstatus };
+      console.log(userobj);
+      for (var obj in users_online) {
+        if (obj.name == client_name) {
+          obj.id = client.id;
+          flag=1;
+          break;
         }
+      }
+      if (flag == 0) {
+        users_online.push(userobj);
+      }
+        client.emit('get_online_users',users_online);
+        client.broadcast.emit('get_online_users',users_online);
+        console.log(users_online);
     })
+
+
+    client.emit('message_from_server',messages) // fire the event
+
+    client.on('message_from_client',function(msg,sender){ // handle the event
+      console.log(msg);
+      senderobj={'name': sender, 'message': msg}
+      messages.push(senderobj);
+      client.broadcast.emit("messages_from_server",messages)
+      client.emit("messages_from_server",messages)
+    })
+
+
 })
+
 //End Socket
 
 //connect to Mongo
