@@ -14,6 +14,15 @@ angular.module('messanger').config(function($stateProvider) {
           }
         }
     })
+    .state('app.activeUsers',{
+        url:'/activeUsers',
+        views:{
+          "pageContent":{
+            templateUrl:"templates/activeUsers.html",
+            controller: 'activeUsers'
+          }
+        }
+    })
     .state('home',{
         url : '',
         templateUrl : "templates/home.html"
