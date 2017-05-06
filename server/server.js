@@ -54,9 +54,9 @@ app.post('/api/login', function (req, res) {
 
 app.post('/api/register',function (req,res) {
     var user_name = req.body.username;
-    var first_name = req.body.firstname; 
-    var last_name = req.body.lastname; 
-    var email = req.body.email; 
+    var first_name = req.body.firstname;
+    var last_name = req.body.lastname;
+    var email = req.body.email;
     var password = req.body.password;
     var repassword = req.body.repassword;
     if (user_name && first_name && last_name && email && password && repassword && password == repassword) {
@@ -73,7 +73,7 @@ app.post('/api/register',function (req,res) {
     } else {
         res.send({status: 0, message: ["All fields are required!!. Password and password confirmation must be the the same!."]});
     }
-    
+
 });
 
 app.get('/api/active_users',function(req,res){
@@ -82,7 +82,7 @@ app.get('/api/active_users',function(req,res){
             res.send({status: 1, message: active_users});
         }else{
             res.send({status: 1, message: ["No online users"]});
-        }   
+        }
     });
 })
 
