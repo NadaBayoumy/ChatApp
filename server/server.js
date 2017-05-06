@@ -7,32 +7,10 @@ const Mongoclient = require('mongodb').MongoClient;
 const bodyParser = require('body-parser');
 var database;
 var messages = [];
-var users = [];
+var users_online = [];
 var Client;
 
 app.use(bodyParser.json());
-//var _ = reqiure('underscore');
-//
-//function allowCrossDomain(req, res, next) {
-//  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-//
-//  var origin = req.headers.origin;
-//  if (_.contains(app.get('allowed_origins'), origin)) {
-//    res.setHeader('Access-Control-Allow-Origin', origin);
-//  }
-//
-//  if (req.method === 'OPTIONS') {
-//    res.send(200);
-//  } else {
-//    next();
-//  }
-//}
-//
-//app.configure(function () {
-//  app.use(express.logger());
-//  app.use(express.bodyParser());
-//  app.use(allowCrossDomain);
-//});
 
 // Add headers
 app.use(function (req, res, next) {
@@ -81,7 +59,8 @@ app.post('/api/register',function (req,res) {
     var email = req.body.email;
     var password = req.body.password;
     var repassword = req.body.repassword;
-    if (user_name && first_name && last_name && email && password && repassword && password == repassword) {
+    // console.log(user_name , first_name , last_name, email, password);
+    if (user_name && first_name && last_name && email && password) {
         db.collection('users').find({"username": user_name}).toArray(function (err,reg_user) {
             if (!reg_user.length) {
                 //Username available continue Register
@@ -107,6 +86,20 @@ app.get('/api/active_users',function(req,res){
         }
     });
 })
+
+
+//Socket
+io.on('connection',function (client) {
+    console.log("new client connected with id: "+client.id);
+            db.collection('users').find().toArray(function (err,users) {
+        if (!err) {
+            client.emit('get_online_users',users_online);
+            users_online.push(client);
+            client.broadcast.emit('get_online_users', users_online);
+        }
+    })
+})
+//End Socket
 
 //connect to Mongo
 var url = 'mongodb://localhost:27017/ourchat';
