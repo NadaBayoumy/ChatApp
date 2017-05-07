@@ -32,13 +32,13 @@ angular.module('messanger').factory('User',function($http,$q,$ionicPopup,$state,
     //           });
     //     }
     // }
-
+// 172.16.2.139
     return {
         activeUsers : function(user){
             // checkConnection();
             var def = $q.defer();
                 $http({
-                    url:'http://172.16.2.139:3000/api/active_users',
+                    url:'http://localhost:3000/api/active_users',
                     method:'GET',
                     data: user
                 }).then(function(res){
@@ -55,7 +55,7 @@ angular.module('messanger').factory('User',function($http,$q,$ionicPopup,$state,
             // checkConnection();
             var def = $q.defer();
                 $http({
-                    url:'http://172.16.2.139:3000/api/register',
+                    url:'http://localhost:3000/api/register',
                     method:'POST',
                     data: user
                 }).then(function(res){
@@ -73,7 +73,7 @@ angular.module('messanger').factory('User',function($http,$q,$ionicPopup,$state,
             // checkConnection();
             var def = $q.defer();
                 $http({
-                    url:'http://172.16.2.139:3000/api/login',
+                    url:'http://localhost:3000/api/login',
                     method:'POST',
                     data: user
                 }).then(function(res){
