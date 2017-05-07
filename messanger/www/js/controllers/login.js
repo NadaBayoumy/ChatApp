@@ -10,6 +10,7 @@ angular.module('messanger').controller('login', function ($scope, User, $rootSco
 
                 $rootScope.loggedinuser = $scope.saveduser;
                 if (res.status == 1) {
+                    socket.open();
                     socket.emit('signin', $scope.saveduser.username, 'online');
                     $state.go('app.activeUsers');
                 } else {

@@ -10,7 +10,7 @@ var messages = [];
 var users = [];
 var users_online = [];
 var Client;
-var users_object = [];
+var users_objects = [];
 var flag = 0;
 
 app.use(bodyParser.json());
@@ -42,7 +42,7 @@ app.post('/api/login', function (req, res) {
     var user_password = req.body.password;
     if (user_name && user_password) {
         db.collection('users').find({"username": user_name, "password": user_password}).toArray(function (err, user_stat) {
-            console.log(user_stat);
+//            console.log(user_stat);
             if (user_stat.length) {
                 users.push(user_stat[0]);
                 res.send({status: 1, message: ["Login ok"]});
@@ -51,7 +51,7 @@ app.post('/api/login', function (req, res) {
             }
         });
     } else {
-        res.send({status: 0, message: ["Either Email or Password field is blank"]})
+        res.send({status: 0, message: ["Either Email or Password field is blank"]});
     }
 });
 
@@ -102,14 +102,14 @@ io.on('connection', function (client) {
         for (var i = users_online.length - 1; i >= 0; i--) {
             if (users_online[i].name == client_name) {
                 users_online[i].id = client.id;
-                users_object[i].socketclient = client;
+                users_objects[i].socketclient = client;
                 flag = 1;
                 break;
             }
         };
         if (flag == 0) {
             users_online.push(userobj);
-            users_object.push({'socketclient':client, 'name':client_name});
+            users_objects.push({'socketclient':client, 'name':client_name});
         };
         var users_really_online = [];
         for (var i = users_online.length - 1; i >= 0; i--) {
@@ -134,16 +134,24 @@ io.on('connection', function (client) {
         senderobj = {'name': sender, 'message': msg, 'date': date, 'time': time};
         messages.push(senderobj);
         db.collection('room_messages').insert(senderobj);
-        db.collection('room_messages').find({'date': date}).limit(10).toArray(function (err, room_msgs) {
-            client.broadcast.emit("messages_from_server", room_msgs);
+        db.collection('room_messages').find({'date': date}).limit(10).sort({'_id':-1}).toArray(function (err, room_msgs) {
+            client.broadcast.emit("messages_from_server", room_msgs.reverse());
             client.emit("messages_from_server", room_msgs);
         });
         // client.broadcast.emit("messages_from_server",messages)
         // client.emit("messages_from_server",messages)
     })
-    client.emit('disconnect');
     client.on('disconnect',function () {
-        console.log("Disconnected",client.id,client);
+        console.log("Disconnected",client.id);
+        for (var i = users_online.length - 1; i >= 0; i--) {
+            if (users_online[i].id == client.id) {
+                console.log("b4",users_online);
+                users_online.splice(i, 1);
+                console.log("aftr",users_online);
+                users_objects.splice(i, 1);
+                break;
+            }
+        };
     })
 
 
