@@ -47,4 +47,26 @@ angular.module('messanger').config(function($stateProvider) {
         templateUrl : "templates/login.html",
         controller: 'login'
     })
+
+    // 
+    // .state('app.activeUsers',{
+    //     url:'/activeUsers',
+    //     views:{
+    //       "pageContent":{
+    //         templateUrl:"templates/activeUsers.html",
+    //         controller: 'activeUsers'
+    //       }
+    //     }
+    // })
+
+    .state('app.singlechat',{
+        url :'/singlechat',
+        views:{
+          "pageContent":{
+            templateUrl : "templates/singlechat.html",
+            controller :'singlechat'
+          }
+        }
+        })
+
 })

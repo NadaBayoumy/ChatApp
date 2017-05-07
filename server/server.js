@@ -102,10 +102,11 @@ io.on('connection',function (client) {
     // })
 
     client.on('name_from_client',function(client_name, userstatus){
-      var userobj={'id': client.id,'name': client_name, 'status':userstatus };
+      var userobj={'clientsocket': client,'name': client_name, 'status':userstatus };
+      client.emit('logged_in_user', userobj)
       for (var i = users_online.length - 1; i >= 0; i--) {
       	 if (users_online[i].name == client_name) {
-          users_online[i].id = client.id;
+          users_online[i].clientsocket = client;
           flag=1;
           break;
         }
@@ -119,9 +120,9 @@ io.on('connection',function (client) {
           users_really_online.push(users_online[i]);
         }
       };
-client.emit('get_online_users',users_really_online);
+        client.emit('get_online_users',users_really_online);
         client.broadcast.emit('get_online_users',users_really_online);
-        
+
     });
 
 
@@ -141,6 +142,11 @@ client.emit('get_online_users',users_really_online);
       client.emit("messages_from_server",room_msgs)})
       // client.broadcast.emit("messages_from_server",messages)
       // client.emit("messages_from_server",messages)
+    })
+
+
+    client.on('send_single_message',function(singlemessage) {
+
     })
 
 
