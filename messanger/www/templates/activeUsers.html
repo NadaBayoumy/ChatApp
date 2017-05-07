@@ -5,9 +5,7 @@
          <!-- add a section header -->
          <ion-item class="item-divider">List of Active users</ion-item>
          <ul>
-           <li ng-repeat="online in activeUsers track by $index" ng-click='chatsingle(online)'>{{online.name}}:{{online.id}}
-
-           </li>
+           <li ng-repeat="online in activeUsers track by $index">{{online.name}}</li>
          </ul>
             <!-- iterate thru each item in the list, use $index as item identifier -->
             <!-- <ion-item ng-repeat="activeUser in activeUsers track by $index">

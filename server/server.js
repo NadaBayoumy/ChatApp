@@ -10,7 +10,7 @@ var messages = [];
 var users_online = [];
 var Client;
 var users = [];
-var flag = 0;
+var flag=0;
 
 app.use(bodyParser.json());
 
@@ -54,7 +54,7 @@ app.post('/api/login', function (req, res) {
     }
 });
 
-app.post('/api/register', function (req, res) {
+app.post('/api/register',function (req,res) {
     var user_name = req.body.username;
     var first_name = req.body.firstname;
     var last_name = req.body.lastname;
@@ -63,12 +63,12 @@ app.post('/api/register', function (req, res) {
     var repassword = req.body.repassword;
     // console.log(user_name , first_name , last_name, email, password);
     if (user_name && first_name && last_name && email && password) {
-        db.collection('users').find({"username": user_name}).toArray(function (err, reg_user) {
+        db.collection('users').find({"username": user_name}).toArray(function (err,reg_user) {
             if (!reg_user.length) {
                 //Username available continue Register
-                db.collection('users').insert({"username": user_name, "firstname": first_name, "lastname": last_name, "email": email, "password": password});
+                db.collection('users').insert({"username": user_name, "firstname":first_name, "lastname": last_name, "email":email, "password":password});
                 res.send({status: 1, message: ["Successfuly registered."]})
-            } else {
+            }else{
                 //Username NOT available return error
                 res.send({status: 0, message: ["Username already exists. Try another one!!"]})
             }
@@ -79,11 +79,11 @@ app.post('/api/register', function (req, res) {
 
 });
 
-app.get('/api/active_users', function (req, res) {
-    db.collection('users').find({}).toArray(function (err, active_users) {
+app.get('/api/active_users',function(req,res){
+    db.collection('users').find({}).toArray(function (err,active_users) {
         if (active_users.length) {
             res.send({status: 1, message: active_users});
-        } else {
+        }else{
             res.send({status: 0, message: ["No online users"]});
         }
     });
@@ -91,8 +91,8 @@ app.get('/api/active_users', function (req, res) {
 
 
 //Socket
-io.on('connection', function (client) {
-    console.log("new client connected with id: " + client.id);
+io.on('connection',function (client) {
+    console.log("new client connected with id: "+client.id);
     //         db.collection('users').find().toArray(function (err,users) {
     //     if (!err) {
     //         client.emit('get_online_users',users_online);
@@ -101,50 +101,46 @@ io.on('connection', function (client) {
     //     }
     // })
 
-    client.on('name_from_client', function (client_name, userstatus) {
-        var userobj = {'socketclient': client, 'name': client_name, 'status': userstatus};
-        for (var i = users_online.length - 1; i >= 0; i--) {
-            if (users_online[i].name == client_name) {
-                users_online[i].socketclient = client;
-                flag = 1;
-                break;
-            }
+    client.on('name_from_client',function(client_name, userstatus){
+      var userobj={'socketclient': client,'name': client_name, 'status':userstatus };
+      for (var i = users_online.length - 1; i >= 0; i--) {
+      	 if (users_online[i].name == client_name) {
+          users_online[i].socketclient = client;
+          flag=1;
+          break;
         }
-        ;
-        if (flag == 0) {
-            users_online.push(userobj);
+      };
+      if (flag == 0) {
+        users_online.push(userobj);
+      };
+      var users_really_online = [];
+       for (var i = users_online.length - 1; i >= 0; i--) {
+      	 if (users_online[i].status == 'online') {
+          users_really_online.push(users_online[i]);
         }
-        ;
-        var users_really_online = [];
-        for (var i = users_online.length - 1; i >= 0; i--) {
-            if (users_online[i].status == 'online') {
-                users_really_online.push(users_online[i]);
-            }
-        }
-        ;
-        client.emit('get_online_users', users_really_online);
-        client.broadcast.emit('get_online_users', users_really_online);
-
+      };
+client.emit('get_online_users',users_really_online);
+        client.broadcast.emit('get_online_users',users_really_online);
+        
     });
 
 
-    client.emit('message_from_server', messages) // fire the event
+    client.emit('message_from_server',messages) // fire the event
 
-    client.on('message_from_client', function (msg, sender) { // handle the event
-        var today = new Date();
-        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-        var dateTime = date + ' ' + time;
-        console.log(msg);
-        senderobj = {'name': sender, 'message': msg, 'date': date, 'time': time};
-        messages.push(senderobj);
-        db.collection('room_messages').insert(senderobj);
-        db.collection('room_messages').find({'date': date}).toArray(function (err, room_msgs) {
-            client.broadcast.emit("messages_from_server", room_msgs)
-            client.emit("messages_from_server", room_msgs)
-        })
-        // client.broadcast.emit("messages_from_server",messages)
-        // client.emit("messages_from_server",messages)
+    client.on('message_from_client',function(msg,sender){ // handle the event
+      var today = new Date();
+      var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+	var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+	var dateTime = date+' '+time;
+      console.log(msg);
+      senderobj={'name': sender, 'message': msg, 'date':date, 'time':time};
+      messages.push(senderobj);
+      db.collection('room_messages').insert(senderobj);
+      db.collection('room_messages').find({'date':date}).toArray(function (err,room_msgs) {
+	client.broadcast.emit("messages_from_server",room_msgs)
+      client.emit("messages_from_server",room_msgs)})
+      // client.broadcast.emit("messages_from_server",messages)
+      // client.emit("messages_from_server",messages)
     })
 
 

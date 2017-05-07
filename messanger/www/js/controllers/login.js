@@ -1,28 +1,15 @@
 angular.module('messanger').controller('login',function($scope,User,$rootScope,$state){
     $scope.saveduser={}
 
-
-
-
     $scope.login = function(valid){
         console.log($scope.saveduser);
         if(valid){
             localStorage.setItem('username',$scope.saveduser.username)
             User.login($scope.saveduser).then(function(res) {
 
-              // alert('inside log')
-              $rootScope.loggedinuser = $scope.saveduser;
-
-
-
-
-
-
+            $rootScope.loggedinuser = $scope.saveduser;
             if(res.status == 1){
               socket.emit('name_from_client',$scope.saveduser.username , 'online')
-
-
-
                 $state.go('app.activeUsers');
             }else{
               alert('not valid user')
