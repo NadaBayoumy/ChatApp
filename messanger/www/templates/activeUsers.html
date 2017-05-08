@@ -9,9 +9,11 @@
          <ion-item class="item-profile" ng-repeat="online in activeUsers track by $index" >
           <div class="item-avatar">
             <img ng-src="img/person.png">
-             <div class="card-title usernameactive">{{online.name}}</div>
+             <div class="card-title usernameactive">{{online.name}}
+               <button ng-click="private(online.name);" class="singlechatbutton button-light"> start private chat</button>
+             </div>
              <!-- <div class="card-subtitle">Status: {{online.status}}</div> -->
-             <a ui-sref="app.singlechat" class="singlechatbutton"> > </a>
+             <!-- <a ui-sref="app.singlechat" class="singlechatbutton"> > </a> -->
              <!-- <button class="button button-circle singlechatbutton" ui-sref="app.singlechat">></button> -->
           </div>
         </ion-item>
@@ -24,7 +26,7 @@
            <li ng-repeat="online in activeUsers track by $index">{{online.name}}
                <button ng-click="private(online.name);"> start private chat</button>
            </li>
-           
+
          </ul>
 
             <!-- iterate thru each item in the list, use $index as item identifier -->
