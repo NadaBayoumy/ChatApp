@@ -86,5 +86,21 @@ angular.module('messanger').factory('User',function($http,$q,$ionicPopup,$state,
                 })
             return def.promise;
         },
+        getuserinfo : function(username){
+            var def = $q.defer();
+                $http({
+                    url:'http://localhost:3000/api/get_user_info',
+                    method:'GET',
+                    data:{'username' : username}
+                }).then(function(res){
+                    console.log(res.data)
+                    //return {status:1, message:user_info}
+                    def.resolve(res.data)
+                },function(err){
+                    console.log(err)
+                    def.reject(err)
+                })
+            return def.promise;
+        },
     }
 })

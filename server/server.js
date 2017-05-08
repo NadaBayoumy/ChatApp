@@ -91,6 +91,16 @@ app.get('/api/active_users', function (req, res) {
             res.send({status: 0, message: ["No online users"]});
         }
     });
+});
+
+app.get('/api/get_user_info', function (req,res) {
+        db.collection('users').find({'username': req.query.username},{firstname:1, lastname:1, _id:0}).toArray(function (err, user_info) {
+        if (user_info.length) {
+            res.send({status:1, message:user_info});
+        }else{
+            res.send({status:1, message:["No user with the provided username was found."]});
+        }
+        })
 })
 
 //End of routing
@@ -98,7 +108,7 @@ app.get('/api/active_users', function (req, res) {
 //Socket
 io.on('connection', function (client) {
     console.log("new client connected with id: " + client.id);
-  
+
 
     client.on('signin', function (client_name, userstatus) {
         var userobj = {'id': client.id, 'name': client_name, 'status': userstatus};

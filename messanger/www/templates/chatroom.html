@@ -1,22 +1,43 @@
-<ion-view view-title="ABOUT">
-  <ion-content>
+<ion-view view-title="Chat Room">
+  <ion-content class="chatroompage">
     <div class="container">
-      <ul>
-        <li ng-repeat="msg in messages track by $index">{{msg.name}} : {{msg.message}}</li>
-      </ul>
 
-      <form novalidate name="signupForm" ng-submit="send()">
-        <div class="form-group">
-          <label>Message</label>
-          <textarea name="name" ng-model="data.message" class="form-control" rows="8" cols="80"></textarea>
-        </div>
+      <div class="singlechatmessage" ng-repeat="msg in messages track by $index">
+        <div class="sendername" style="">
+             {{msg.name}}
+         </div>
 
-        <button  class="btn btn-primary">Send</button>
-      </form>
-      <strong> Online people</strong>
+
+          <div style="">
+            <div class="talk-bubble tri-right left-top">
+              <div class="talktext">
+                <p> {{msg.message}}</p>
+                <!-- <p> {{msg.date}}</p> -->
+                <p class="messagetiming"> {{msg.time}}</p>
+              </div>
+           </div>
+
+          </div>
+
+
+
+          </div>
+
+      </div>
+
+
+            <form novalidate name="signupForm" ng-submit="send()">
+                <div class="item item-input" style="height: 10%" >
+                    <input type="text" ng-model="data.message"  name="name"  placeholder="message" ng-model="title" class="messagebox">
+                    <i style="color:blue" class="button button-clear icon ion-paper-airplane padding-right" ng-click="send()"></i>
+                </div>
+            </form>
+
+
+      <!-- <strong> Online people</strong>
       <ul>
         <li ng-repeat="online in onlines track by $index">{{online}}</li>
-      </ul>
+      </ul> -->
     </div>
     <!-- <div class="container">
       <ul>

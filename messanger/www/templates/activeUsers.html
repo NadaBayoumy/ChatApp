@@ -1,15 +1,32 @@
 <ion-view view-title="Active users ">
 
-   <ion-content class="padding">
+   <ion-content class="padding activeuserspage">
+
+
       <ion-list>
          <!-- add a section header -->
-         <ion-item class="item-divider">List of Active users</ion-item>
+
+         <ion-item class="item-profile" ng-repeat="online in activeUsers track by $index" >
+          <div class="item-avatar">
+            <img ng-src="img/person.png">
+             <div class="card-title usernameactive">{{online.name}}</div>
+             <!-- <div class="card-subtitle">Status: {{online.status}}</div> -->
+             <a ui-sref="app.singlechat" class="singlechatbutton"> > </a>
+             <!-- <button class="button button-circle singlechatbutton" ui-sref="app.singlechat">></button> -->
+          </div>
+        </ion-item>
+
+
+         <!-- <ion-item class="item-divider">List of Active users</ion-item>
+         <ion-img width="80" height="80" src="img/ionic.png">
          <ul>
+
            <li ng-repeat="online in activeUsers track by $index">{{online.name}}
                <button ng-click="private(online.name);"> start private chat</button>
            </li>
            
          </ul>
+
             <!-- iterate thru each item in the list, use $index as item identifier -->
             <!-- <ion-item ng-repeat="activeUser in activeUsers track by $index">
             <h2>{{activeUser.username}} </h2>
@@ -17,7 +34,7 @@
             </ion-item> -->
       </ion-list>
 
-      <button ion-button ui-sref="app.chatroom">Chatroom</button>
+      <button class="button button-block button-balanced activated registerbutton" ui-sref="app.chatroom">Chatroom</button>
    </ion-content>
 
 
