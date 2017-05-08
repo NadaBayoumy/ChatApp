@@ -1,27 +1,48 @@
 <ion-view view-title="Login">
-  <ion-content>
+
+  <div class="bar bar-header bar-positive">
+    <h1 class="title">Login</h1>
+  </div>
+
+  <ion-content  class="has-header">
     <form ng-submit="login(loginform.$valid); submitted=true;" novalidate name="loginform">
 
+
+
+      <label class="item item-input">
+        <!-- <span class="input-label">Username</span> -->
+          <input type="text" ng-model="saveduser.username" name="username" required placeholder="User Name">
+          <p class="error" ng-if="submitted && loginform.username.$error.required" >Please enter user name</p>
+      </label>
+
+            <!--
 			<div class="field">
 				<label>username</label>
 				<input type="text" ng-model="saveduser.username" name="username" required>
 				<p class="error" ng-if="submitted && loginform.username.$error.required" >Please enter user name</p>
-			</div>
+			</div> -->
 
 
+
+      <label class="item item-input">
+        <!-- <span class="input-label">Password</span> -->
+          <input type="password" ng-model="saveduser.password" ng-minlength="4" name="password" required placeholder="***">
+          <p class="error" ng-if="submitted && loginform.password.$error.required" >Please enter password</p>
+  				<p class="error" ng-if="submitted && loginform.password.$error.minlength" >password has minimum length of 4</p>
+      </label>
+
+<!--
 			<div class="field">
 				<label>password</label>
 				<input type="password" ng-model="saveduser.password" ng-minlength="4" name="password" required>
 				<p class="error" ng-if="submitted && loginform.password.$error.required" >Please enter password</p>
 				<p class="error" ng-if="submitted && loginform.password.$error.minlength" >password has minimum length of 4</p>
-			</div>
+			</div> -->
 
 
 
 
-			<div>
-				<button name="button">login</button>
-			</div>
+      <button class="button button-block button-balanced activated registerbutton">Login</button>
 		</form>
     <!-- <form novalidate ng-submit="register()">
 

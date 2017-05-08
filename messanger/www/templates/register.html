@@ -1,44 +1,105 @@
 <ion-view view-title="Register">
-  <ion-content>
+  <div class="bar bar-header bar-positive">
+    <h1 class="title">Join US</h1>
+  </div>
+
+  <ion-content  class="has-header">
+
     <form ng-submit="register(registerform.$valid); submitted=true;" novalidate name="registerform">
 
+      <label class="item item-input">
+        <!-- <span class="input-label">Username</span> -->
+        <input type="text" ng-model="user.username" name="username" required placeholder="User Name">
+        <p class="error" ng-if="submitted && registerform.username.$error.required" >Please enter user name</p>
+      </label>
 
-      <div class="field">
+
+      <!-- <div class="field">
         <label>username</label>
         <input type="text" ng-model="user.username" name="username" required>
         <p class="error" ng-if="submitted && registerform.username.$error.required" >Please enter user name</p>
-      </div>
+      </div> -->
+
+      <label class="item item-input">
+        <!-- <span class="input-label">first name</span> -->
+        <input type="text" ng-model="user.firstname" name="firstname" required placeholder="First Name">
+        <p class="error" ng-if="submitted && registerform.firstname.$error.required" >Please enter first name</p>
+      </label>
 
 
 
-      <div class="field">
+
+      <!-- <div class="field">
         <label>first name</label>
         <input type="text" ng-model="user.firstname" name="firstname" required>
         <p class="error" ng-if="submitted && registerform.firstname.$error.required" >Please enter first name</p>
-      </div>
+      </div> -->
 
+
+      <label class="item item-input">
+        <!-- <span class="input-label">last name</span> -->
+        <input type="text" ng-model="user.lastname" name="lastname" required placeholder="Last Name">
+        <p class="error" ng-if="submitted && registerform.lastname.$error.required" >Please enter last name</p>
+      </label>
+
+
+<!--
       <div class="field">
         <label>last name</label>
         <input type="text" ng-model="user.lastname" name="lastname" required>
         <p class="error" ng-if="submitted && registerform.lastname.$error.required" >Please enter last name</p>
-      </div>
+      </div> -->
 
 
 
+      <label class="item item-input">
+        <!-- <span class="input-label">email</span> -->
+        <input type="email" ng-model="user.email" name="email" required placeholder="User@Domain.com">
+        <p class="error" ng-if="submitted && registerform.email.$error.required" >Please enter email</p>
+        <p class="error" ng-if="submitted && registerform.email.$error.email" >Please enter valid email</p>
+      </label>
 
+
+<!--
       <div class="field">
         <label>email</label>
         <input type="email" ng-model="user.email" name="email" required>
         <p class="error" ng-if="submitted && registerform.email.$error.required" >Please enter email</p>
         <p class="error" ng-if="submitted && registerform.email.$error.email" >Please enter valid email</p>
-      </div>
+      </div> -->
 
-      <div class="field">
+
+
+      <label class="item item-input">
+        <!-- <span class="input-label">password</span> -->
+          <input type="password" ng-model="user.password" ng-minlength="4" name="password" required placeholder="****">
+          <p class="error" ng-if="submitted && registerform.password.$error.required" >Please enter password</p>
+          <p class="error" ng-if="submitted && registerform.password.$error.minlength" >password has minimum length of 4</p>
+      </label>
+
+
+
+      <!-- <div class="field">
         <label>password</label>
         <input type="password" ng-model="user.password" ng-minlength="4" name="password" required>
         <p class="error" ng-if="submitted && registerform.password.$error.required" >Please enter password</p>
         <p class="error" ng-if="submitted && registerform.password.$error.minlength" >password has minimum length of 4</p>
-      </div>
+      </div> -->
+
+
+
+
+      <label class="item item-input">
+        <!-- <span class="input-label">retype password</span> -->
+          <input type="password" ng-model="user.repassword" ng-minlength="4" name="repassword" required placeholder="****">
+          <p class="error" ng-if="submitted && registerform.repassword.$error.required" >Please retype password</p>
+          <p class="error" ng-if="submitted && user.repassword && user.password != user.repassword" >password doesnot match</p>
+          <p class="error" ng-if="submitted && registerform.repassword.$error.minlength" >password has minimum length of 4</p>
+
+      </label>
+
+
+<!--
 
       <div class="field">
         <label> retype password</label>
@@ -47,12 +108,15 @@
         <p class="error" ng-if="submitted && user.repassword && user.password != user.repassword" >password doesnot match</p>
         <p class="error" ng-if="submitted && registerform.repassword.$error.minlength" >password has minimum length of 4</p>
 
-      </div>
+      </div> -->
 
 
-			<div>
+      <button class="button button-block button-balanced activated registerbutton">Register</button>
+      <!-- <button class="button button-circle button-positive icon ion-social-facebook"></button> -->
+			<!-- <div>
 				<button name="button">Register</button>
-			</div>
+			</div> -->
+
 		</form>
     <!-- <form novalidate ng-submit="register()">
 
