@@ -19,11 +19,11 @@
     <ion-list>
 
     <ion-item  menu-close>
-       <img class="menulogo" ng-src="img/ionic.png">
+       <img class="menulogo" ng-src="{{profile_pic}}">
      </ion-item>
 
      <ion-item  menu-close>
-         FirstName, LastName
+         {{user[0].firstname}} {{user[0].lastname}}
         <!-- {{firstname}}  {{lastname}} -->
       </ion-item>
 

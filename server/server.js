@@ -153,7 +153,7 @@ io.on('connection', function (client) {
             var container = {};
             //storing a variable in window to access it's value
 
-            // to get soket of reciver 
+            // to get soket of reciver
             for (var i = users_objects.length - 1; i >= 0; i--) {
                 if (users_objects[i].name == reciver_user) {
                     var reciver_socket = users_objects[i].socketclient;
@@ -163,7 +163,7 @@ io.on('connection', function (client) {
             db.createCollection(collection_name, {strict: true}, function (error, collection) {
 
                 container [collection_name + 'collection'] = [];
-                //by opening the private chat template the history messages will be in 
+                //by opening the private chat template the history messages will be in
                 db.collection(collection_name).find().toArray(function (err, private_msgs) {
                     reciver_socket.emit("private_stored_msgs", private_msgs);
                     client.emit("private_stored_msgs", private_msgs);
@@ -219,9 +219,7 @@ io.on('connection', function (client) {
         console.log("Disconnected", client.id);
         for (var i = users_online.length - 1; i >= 0; i--) {
             if (users_online[i].id == client.id) {
-                console.log("b4", users_online);
                 users_online.splice(i, 1);
-                console.log("aftr", users_online);
                 users_objects.splice(i, 1);
                 break;
             }
