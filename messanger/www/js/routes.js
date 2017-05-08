@@ -24,6 +24,16 @@ angular.module('messanger').config(function($stateProvider) {
           }
         }
     })
+    .state('app.privatechat',{
+        url:'/privatechat',
+        views:{
+          "pageContent":{
+            templateUrl:"templates/privatechat.html",
+            controller: "privatechat"
+          }
+        }
+    })
+    
     .state('app.activeUsers',{
         url:'/activeUsers',
         views:{

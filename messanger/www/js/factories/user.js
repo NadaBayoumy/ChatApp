@@ -43,6 +43,7 @@ angular.module('messanger').factory('User',function($http,$q,$ionicPopup,$state,
                     data: user
                 }).then(function(res){
                     console.log(res.data)
+                    console.log('gebt data!');
                     def.resolve(res.data)
                 },function(err){
                     console.log(err)

@@ -13,6 +13,7 @@ var Client;
 var users_objects = [];
 var flag = 0;
 
+
 app.use(bodyParser.json());
 
 // Add headers
@@ -62,7 +63,7 @@ app.post('/api/register', function (req, res) {
     var email = req.body.email;
     var password = req.body.password;
     var repassword = req.body.repassword;
-    // console.log(user_name , first_name , last_name, email, password);
+//     console.log(user_name , first_name , last_name, email, password);
     if (user_name && first_name && last_name && email && password) {
         db.collection('users').find({"username": user_name}).toArray(function (err, reg_user) {
             if (!reg_user.length) {
@@ -82,6 +83,8 @@ app.post('/api/register', function (req, res) {
 
 app.get('/api/active_users', function (req, res) {
     db.collection('users').find({}).toArray(function (err, active_users) {
+        console.log('active: ',active_users);
+        console.log(active_users.length)
         if (active_users.length) {
             res.send({status: 1, message: active_users});
         } else {
@@ -116,13 +119,69 @@ io.on('connection', function (client) {
             if (users_online[i].status == 'online') {
                 users_really_online.push(users_online[i]);
             }
+            console.log('online hereeee',users_online)
         };
         client.emit('get_online_users',users_really_online);
+        console.log(users_really_online);
         client.broadcast.emit('get_online_users',users_really_online);
+        //reciving from client the name of reciver in private chat
+        client.on('reciver', function (reciver_user) {
+            console.log('jjjhhh',reciver_user,users_really_online);
+            // check if they have a colliction on the database or not
+            for (var i = users_really_online.length - 1; i >= 0; i--) {
+            if (users_really_online[i].name == reciver_user) {
+                reciver_user_id=users_really_online[i].id                
+                }  
+                if (users_really_online[i].id == client.id) {
+                    sender_name = users_really_online[i].name               
+                }
+             }
+            var names=[reciver_user,sender_name];
+            var collection_name = names.sort()[0].concat(names.sort()[1]);
+            var container ={};
+            //storing a variable in window to access it's value
+            
+            // to get soket of reciver 
+            for (var i = users_objects.length - 1; i >= 0; i--) {
+            if (users_objects[i].name == reciver_user) {
+                var reciver_socket= users_objects[i].socketclient;             
+                }      
+             }
+            //to add a collection by their name in database and save the messages
+            db.createCollection(collection_name, {strict:true}, function(error, collection){
+                
+                container [collection_name + 'collection'] =[];
+                
+                //by opening the private chat template the history messages will be in 
+                db.collection(collection_name).find().toArray(function (err, private_msgs) {
+                    reciver_socket.emit("private_stored_msgs",private_msgs);
+                    client.emit("private_stored_msgs", private_msgs);                    
+                    
+                });
+                           
+                });
+                
+           //reciving single messages from private chat
+            client.on('message_from_client_private', function (msg, sender) { // handle the event
+                    var today = new Date();
+                    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+                    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                    var dateTime = date + ' ' + time;
+//                    console.log('the sended message',msg);
+                    senderobj = {'name': sender, 'message': msg, 'date': date, 'time': time};
+                    container [collection_name + 'collection'].push(senderobj);
+//                    console.log('check your data',container [collection_name + 'collection'])
+                    db.collection(collection_name).insert(senderobj);
+                    db.collection(collection_name).find({'date': date}).limit(10).sort({'_id':-1}).toArray(function (err, room_msgs) {
+                        reciver_socket.emit("messages_from_server", room_msgs.reverse());
+                        client.emit("private_stored_msgs", room_msgs);
+                    });                    
+                })
 
+            });
+        
     });
-
-
+    
     client.emit('message_from_server', messages) // fire the event
 
     client.on('message_from_client', function (msg, sender) { // handle the event
@@ -141,6 +200,8 @@ io.on('connection', function (client) {
         // client.broadcast.emit("messages_from_server",messages)
         // client.emit("messages_from_server",messages)
     })
+    
+    
     client.on('disconnect',function () {
         console.log("Disconnected",client.id);
         for (var i = users_online.length - 1; i >= 0; i--) {
