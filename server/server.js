@@ -1,3 +1,5 @@
+/* global db */
+
 const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
@@ -83,7 +85,7 @@ app.post('/api/register', function (req, res) {
 
 app.get('/api/active_users', function (req, res) {
     db.collection('users').find({}).toArray(function (err, active_users) {
-        console.log('active: ',active_users);
+        console.log('active: ', active_users);
         console.log(active_users.length)
         if (active_users.length) {
             res.send({status: 1, message: active_users});
@@ -93,23 +95,21 @@ app.get('/api/active_users', function (req, res) {
     });
 });
 
-app.get('/api/get_user_info', function (req,res) {
-        db.collection('users').find({'username': req.query.username},{firstname:1, lastname:1, _id:0}).toArray(function (err, user_info) {
+app.get('/api/get_user_info', function (req, res) {
+    db.collection('users').find({'username': req.query.username}, {firstname: 1, lastname: 1, _id: 0}).toArray(function (err, user_info) {
         if (user_info.length) {
-            res.send({status:1, message:user_info});
-        }else{
-            res.send({status:1, message:["No user with the provided username was found."]});
+            res.send({status: 1, message: user_info});
+        } else {
+            res.send({status: 1, message: ["No user with the provided username was found."]});
         }
-        })
-})
+    });
+});
 
 //End of routing
 
 //Socket
 io.on('connection', function (client) {
     console.log("new client connected with id: " + client.id);
-
-
     client.on('signin', function (client_name, userstatus) {
         var userobj = {'id': client.id, 'name': client_name, 'status': userstatus};
         for (var i = users_online.length - 1; i >= 0; i--) {
@@ -119,81 +119,75 @@ io.on('connection', function (client) {
                 flag = 1;
                 break;
             }
-        };
+        }
+        ;
         if (flag == 0) {
             users_online.push(userobj);
-            users_objects.push({'socketclient':client, 'name':client_name});
-        };
+            users_objects.push({'socketclient': client, 'name': client_name});
+        }
+        ;
         var users_really_online = [];
         for (var i = users_online.length - 1; i >= 0; i--) {
             if (users_online[i].status == 'online') {
                 users_really_online.push(users_online[i]);
             }
-            console.log('online hereeee',users_online)
-        };
-        client.emit('get_online_users',users_really_online);
+        }
+        ;
+        client.emit('get_online_users', users_really_online);
         console.log(users_really_online);
-        client.broadcast.emit('get_online_users',users_really_online);
+        client.broadcast.emit('get_online_users', users_really_online);
         //reciving from client the name of reciver in private chat
         client.on('reciver', function (reciver_user) {
-            console.log('jjjhhh',reciver_user,users_really_online);
+            console.log('jjjhhh', reciver_user, users_really_online);
             // check if they have a colliction on the database or not
             for (var i = users_really_online.length - 1; i >= 0; i--) {
-            if (users_really_online[i].name == reciver_user) {
-                reciver_user_id=users_really_online[i].id                
-                }  
-                if (users_really_online[i].id == client.id) {
-                    sender_name = users_really_online[i].name               
+                if (users_really_online[i].name == reciver_user) {
+                    reciver_user_id = users_really_online[i].id
                 }
-             }
-            var names=[reciver_user,sender_name];
+                if (users_really_online[i].id == client.id) {
+                    sender_name = users_really_online[i].name
+                }
+            }
+            var names = [reciver_user, sender_name];
             var collection_name = names.sort()[0].concat(names.sort()[1]);
-            var container ={};
+            var container = {};
             //storing a variable in window to access it's value
-            
-            // to get soket of reciver 
+
+            // to get soket of reciver
             for (var i = users_objects.length - 1; i >= 0; i--) {
-            if (users_objects[i].name == reciver_user) {
-                var reciver_socket= users_objects[i].socketclient;             
-                }      
-             }
+                if (users_objects[i].name == reciver_user) {
+                    var reciver_socket = users_objects[i].socketclient;
+                }
+            }
             //to add a collection by their name in database and save the messages
-            db.createCollection(collection_name, {strict:true}, function(error, collection){
-                
-                container [collection_name + 'collection'] =[];
-                
-                //by opening the private chat template the history messages will be in 
+            db.createCollection(collection_name, {strict: true}, function (error, collection) {
+
+                container [collection_name + 'collection'] = [];
+                //by opening the private chat template the history messages will be in
                 db.collection(collection_name).find().toArray(function (err, private_msgs) {
-                    reciver_socket.emit("private_stored_msgs",private_msgs);
-                    client.emit("private_stored_msgs", private_msgs);                    
-                    
+                    reciver_socket.emit("private_stored_msgs", private_msgs);
+                    client.emit("private_stored_msgs", private_msgs);
                 });
-                           
-                });
-                
-           //reciving single messages from private chat
-            client.on('message_from_client_private', function (msg, sender) { // handle the event
-                    var today = new Date();
-                    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-                    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-                    var dateTime = date + ' ' + time;
-//                    console.log('the sended message',msg);
-                    senderobj = {'name': sender, 'message': msg, 'date': date, 'time': time};
-                    container [collection_name + 'collection'].push(senderobj);
-//                    console.log('check your data',container [collection_name + 'collection'])
-                    db.collection(collection_name).insert(senderobj);
-                    db.collection(collection_name).find({'date': date}).limit(10).sort({'_id':-1}).toArray(function (err, room_msgs) {
-                        reciver_socket.emit("messages_from_server", room_msgs.reverse());
-                        client.emit("private_stored_msgs", room_msgs);
-                    });                    
-                })
-
             });
-        
-    });
-    
-    client.emit('message_from_server', messages) // fire the event
+            //reciving single messages from private chat
+            client.on('message_from_client_private', function (msg, sender) { // handle the event
+                var today = new Date();
+                var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                var dateTime = date + ' ' + time;
+//                    console.log('the sended message',msg);
+                senderobj = {'name': sender, 'message': msg, 'date': date, 'time': time};
+                container [collection_name + 'collection'].push(senderobj);
+//                    console.log('check your data',container [collection_name + 'collection'])
+                db.collection(collection_name).insert(senderobj);
+                db.collection(collection_name).find({'date': date}).limit(10).sort({'_id': -1}).toArray(function (err, room_msgs) {
+                    reciver_socket.emit("messages_from_server", room_msgs.reverse());
+                    client.emit("private_stored_msgs", room_msgs);
+                });
+            })
 
+        });
+    });
     client.on('message_from_client', function (msg, sender) { // handle the event
         var today = new Date();
         var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
@@ -203,26 +197,34 @@ io.on('connection', function (client) {
         senderobj = {'name': sender, 'message': msg, 'date': date, 'time': time};
         messages.push(senderobj);
         db.collection('room_messages').insert(senderobj);
-        db.collection('room_messages').find({'date': date}).limit(10).sort({'_id':-1}).toArray(function (err, room_msgs) {
+        db.collection('room_messages').find({'date': date}).limit(10).sort({'_id': -1}).toArray(function (err, room_msgs) {
             client.broadcast.emit("messages_from_server", room_msgs.reverse());
             client.emit("messages_from_server", room_msgs);
         });
         // client.broadcast.emit("messages_from_server",messages)
         // client.emit("messages_from_server",messages)
     })
-    
-    
-    client.on('disconnect',function () {
-        console.log("Disconnected",client.id);
+
+
+    client.on('enter_chat_room', function () {
+        var today = new Date();
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+        db.collection('room_messages').find({'date': date}).limit(10).sort({'_id': -1}).toArray(function (err, room_msgs) {
+            client.emit('messages_from_server', room_msgs.reverse()); // fire the event
+
+        });
+    })
+
+    client.on('disconnect', function () {
+        console.log("Disconnected", client.id);
         for (var i = users_online.length - 1; i >= 0; i--) {
             if (users_online[i].id == client.id) {
-                console.log("b4",users_online);
                 users_online.splice(i, 1);
-                console.log("aftr",users_online);
                 users_objects.splice(i, 1);
                 break;
             }
-        };
+        }
+        ;
     })
 
 
