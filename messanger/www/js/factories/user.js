@@ -38,7 +38,7 @@ angular.module('messanger').factory('User',function($http,$q,$ionicPopup,$state,
             // checkConnection();
             var def = $q.defer();
                 $http({
-                    url:'http://localhost:3000/api/active_users',
+                    url:'http://172.16.3.81:3000/api/active_users',
                     method:'GET',
                     data: user
                 }).then(function(res){
@@ -56,7 +56,7 @@ angular.module('messanger').factory('User',function($http,$q,$ionicPopup,$state,
             // checkConnection();
             var def = $q.defer();
                 $http({
-                    url:'http://localhost:3000/api/register',
+                    url:'http://172.16.3.81:3000/api/register',
                     method:'POST',
                     data: user
                 }).then(function(res){
@@ -74,7 +74,7 @@ angular.module('messanger').factory('User',function($http,$q,$ionicPopup,$state,
             // checkConnection();
             var def = $q.defer();
                 $http({
-                    url:'http://localhost:3000/api/login',
+                    url:'http://172.16.3.81:3000/api/login',
                     method:'POST',
                     data: user
                 }).then(function(res){
@@ -89,7 +89,7 @@ angular.module('messanger').factory('User',function($http,$q,$ionicPopup,$state,
         getuserinfo : function(username){
             var def = $q.defer();
                 $http({
-                    url:'http://localhost:3000/api/get_user_info',
+                    url:'http://172.16.3.81:3000/api/get_user_info',
                     method:'GET',
                     params:{'username' : username}
                 }).then(function(res){
