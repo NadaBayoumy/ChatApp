@@ -86,6 +86,22 @@ angular.module('messanger').factory('User',function($http,$q,$ionicPopup,$state,
                 })
             return def.promise;
         },
+        // PushNotification : function(x){
+        //     // checkConnection();
+        //     var def = $q.defer();
+        //         $http({
+        //             url:'http://172.16.2.239:3000/api/login',
+        //             method:'POST',
+        //             data: user
+        //         }).then(function(res){
+        //             console.log(res.data)
+        //             def.resolve(res.data)
+        //         },function(err){
+        //             console.log(err)
+        //             def.reject(err)
+        //         })
+        //     return def.promise;
+        // },
         getuserinfo : function(username){
             var def = $q.defer();
                 $http({
