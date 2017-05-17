@@ -14,7 +14,7 @@ var users_online = [];
 var Client;
 var users_objects = [];
 var flag = 0;
-
+var users_really_online = [];
 
 app.use(bodyParser.json());
 
@@ -110,7 +110,16 @@ app.get('/api/get_user_info', function (req, res) {
 //Socket
 io.on('connection', function (client) {
     console.log("new client connected with id: " + client.id);
+    function fill_array() {
+        users_really_online = [];
+        for (var i = users_online.length - 1; i >= 0; i--) {
+            if (users_online[i].status == 'online') {
+                users_really_online.push(users_online[i]);
+            }
+        }
+    };
     client.on('signin', function (client_name, userstatus) {
+        users_really_online = [];
         var userobj = {'id': client.id, 'name': client_name, 'status': userstatus};
         for (var i = users_online.length - 1; i >= 0; i--) {
             if (users_online[i].name == client_name) {
@@ -126,13 +135,10 @@ io.on('connection', function (client) {
             users_objects.push({'socketclient': client, 'name': client_name});
         }
         ;
-        var users_really_online = [];
-        for (var i = users_online.length - 1; i >= 0; i--) {
-            if (users_online[i].status == 'online') {
-                users_really_online.push(users_online[i]);
-            }
-        }
-        ;
+        fill_array();
+        
+
+
         client.emit('get_online_users', users_really_online);
         console.log(users_really_online);
         client.broadcast.emit('get_online_users', users_really_online);
@@ -213,6 +219,25 @@ io.on('connection', function (client) {
             client.emit('messages_from_server', room_msgs.reverse()); // fire the event
 
         });
+    });
+
+    client.on('toggle_state', function () {
+        for (var i = users_online.length - 1; i >= 0; i--) {
+            if (users_online[i].id == client.id) {
+                if (users_online[i].status == 'online') {
+                    users_online[i].status = 'offline';
+                } else {
+                    users_online[i].status = 'online';
+                }
+
+                break;
+            }
+        }
+        fill_array();
+        client.emit('get_online_users', users_really_online);
+        client.broadcast.emit('get_online_users', users_really_online);
+        console.log(users_really_online);
+
     })
 
     client.on('disconnect', function () {
