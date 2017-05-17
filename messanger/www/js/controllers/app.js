@@ -22,11 +22,17 @@ angular.module('messanger').controller('app',function($scope,User,$rootScope,$st
     })
     },function(err){});
 
+
     $scope.logout = function(){
     	socket.disconnect();
         localStorage.removeItem('username');
 
         $state.go('home')
+    }
+
+
+    $scope.toggle_state= function(){
+        socket.emit('toggle_state');
     }
 
 })
